@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Varebtine Day !</title>
+</head>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+</style>
+
+<body>
+  <div style="font-family: &quot;Pixelify Sans&quot;; background-color: #ffbbc1"
+    class="w-screen h-screen flex justify-center items-center gap-y-2">
+    <div class="bg-white rounded px-3 pt-3 shadow-xl" id="card">
+      <div class="text-center text-2xl font-extrabold">
+        <h1 id="title">Do You Love me ??</h1>
+        <h1 id="sub-title" class="hidden">LOVE U TOO ❤️ !!</h1>
+      </div>
+      <div class="flex justify-center">
+        <img id="picWait" src="img/waiting.png" alt="waiting" />
+        <img id="picAngry" src="img/angry.png" alt="waiting" class="hidden" />
+        <img id="picHappy" src="img/happy.png" alt="waiting" class="hidden" />
+      </div>
+      <div class="flex gap-2 justify-center my-3">
+        <button class="px-3 text-white rounded hover:scale-150 duration-300 ease-in-out" id="btn-yes"
+          style="background-color: #ff6f77" onclick="openLink()">
+          Yes
+        </button>
+        <div class="flex justify-center flex-col" id="btn-no">
+          <button class="px-3 bg-gray-500 text-white rounded">No</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const picWait = document.getElementById("picWait");
+    const picAngry = document.getElementById("picAngry");
+    const picHappy = document.getElementById("picHappy");
+
+    const title = document.getElementById("title");
+    const card = document.getElementById("card");
+
+    const btnNo = document.getElementById("btn-no");
+    const btnYes = document.getElementById("btn-yes");
+    let btnNoSize = 100;
+    let count = 0;
+
+    function openLink() {
+      title.textContent = "I Knew It !!";
+      document.getElementById("sub-title").classList.remove("hidden");
+      picAngry.style.display = "none";
+      picWait.style.display = "none";
+      picHappy.style.display = "block";
+      btnNo.style.display = "none";
+      window.open("https://youtu.be/MnfyNUvHqFw?list=RDMnfyNUvHqFw&t=78", "_blank");
+    }
+
+    const handleEventHoverNo = (e) => {
+      const type = e.type;
+      if (type == "mouseover") {
+        const x = Math.random() * (window.innerWidth - btnNo.offsetWidth);
+        const y = Math.random() * (window.innerHeight - btnNo.offsetHeight);
+        btnNoSize = btnNoSize - 2;
+        count = count + 1;
+        if (count >= 3 && !isChasing) {
+          targetElement = null
+          picWait.classList.add("hidden");
+          picAngry.classList.remove("hidden");
+          activateChaseMode();
+        }
+
+        btnNo.style.position = "absolute";
+        btnNo.style.left = `${x}px`;
+        btnNo.style.top = `${y}px`;
+        btnNo.style.fontSize = `${btnNoSize}%`;
+      }
+    };
+    const handleEventClickNo = (e) => {
+      const type = e.type;
+      if (type == "mouseover") {
+        picWait.classList.add("hidden");
+        picAngry.classList.add("block");
+        picAngry.classList.remove("hidden");
+      } else {
+        picAngry.classList.add("hidden");
+        picWait.classList.remove("hidden");
+      }
+    };
+
+    const handleEventHoverYes = (e) => {
+      const type = e.type;
+      console.log("Event triggered:", e.type);
+      if (type == "mouseover") {
+        picAngry.classList.add("hidden");
+        picWait.classList.remove("hidden");
+
+        picWait.classList.add("hidden");
+
+        picHappy.classList.add("block");
+        picHappy.classList.remove("hidden");
+        btnNo.style.display = "none";
+        count = 0;
+      } else {
+        picHappy.classList.add("hidden");
+        picWait.classList.remove("hidden");
+      }
+    };
+
+    // You have to call them separately
+    btnNo.addEventListener("mouseover", handleEventHoverNo);
+    btnNo.addEventListener("mouseleave", handleEventHoverNo);
+    btnNo.addEventListener("click", handleEventClickNo);
+
+    btnYes.addEventListener("mouseover", handleEventHoverYes);
+    btnYes.addEventListener("mouseleave", handleEventHoverYes);
+
+
+    let isChasing = false;
+    let mouseX = 0;
+    let mouseY = 0;
+    let targetElement = null;
+    card.addEventListener("mouseleave", ((e) => {
+      if (e.type === "mouseleave") {
+        if (targetElement) {
+          mouseX = 0;
+          mouseY = 0;
+          count = 5
+          isChasing = false
+          targetElement = null
+        }
+      }
+    }));
+
+    // ปรับความเร็วได้ตรงนี้ (ยิ่งมากยิ่งเร็ว)
+    const FOLLOW_SPEED = 0.005;
+
+    // ตำแหน่งปัจจุบันของ card
+    let cardX = 0;
+    let cardY = 0;
+
+    // ติดตามตำแหน่ง cursor ตลอดเวลา
+    document.addEventListener("mousemove", (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+
+    // เริ่มโหมดไล่ล่าเมื่อครบ 5
+    function activateChaseMode() {
+      const rect = card.getBoundingClientRect();
+      cardX = rect.left;
+      cardY = rect.top;
+
+      card.style.position = "absolute";
+      card.style.left = `${cardX}px`;
+      card.style.top = `${cardY}px`;
+
+      isChasing = true;
+      requestAnimationFrame(chaseLoop);
+    }
+
+    // ตรวจว่าจุดอยู่ใน element หรือไม่
+    function isPointInsideElement(x, y, element) {
+      const rect = element.getBoundingClientRect();
+      return (
+        x >= rect.left &&
+        x <= rect.right &&
+        y >= rect.top &&
+        y <= rect.bottom
+      );
+    }
+
+    function chaseLoop() {
+      if (!isChasing) return;
+
+      // เช็คว่า cursor อยู่ใน card ไหม
+      const cursorInsideCard = isPointInsideElement(mouseX, mouseY, card);
+
+      if (cursorInsideCard) {
+        console.log("cursorInsideCard :", cursorInsideCard);
+        targetElement ? (cursorInsideCard = false) : null;
+        targetElement = btnYes;
+        return;
+      } else {
+        targetElement = null;
+      }
+
+      let targetX;
+      let targetY;
+
+      if (targetElement) {
+        const rect = targetElement.getBoundingClientRect();
+        targetX = rect.left + rect.width / 2 - card.offsetWidth / 2;
+        targetY = rect.top + rect.height / 2 - card.offsetHeight / 2;
+      } else {
+        targetX = mouseX - card.offsetWidth / 2;
+        targetY = mouseY - card.offsetHeight / 2;
+      }
+
+      // Linear interpolation (smooth movement)
+      cardX += (targetX - cardX) * FOLLOW_SPEED;
+      cardY += (targetY - cardY) * FOLLOW_SPEED;
+
+      card.style.left = `${cardX}px`;
+      card.style.top = `${cardY}px`;
+
+      requestAnimationFrame(chaseLoop);
+    }
+
+  </script>
+</body>
+
+</html>
